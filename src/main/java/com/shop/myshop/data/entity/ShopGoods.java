@@ -22,7 +22,7 @@ import org.hibernate.annotations.DynamicInsert;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MY_SHOP_GOODS")
-public class ShopGoods {
+public class ShopGoods extends BaseEntity{
   @Id
   @Column(name = "GOODS_SEQ", nullable = false)
   @GeneratedValue(strategy = GenerationType.IDENTITY)

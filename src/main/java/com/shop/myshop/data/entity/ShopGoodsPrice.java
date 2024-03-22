@@ -8,35 +8,37 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.DecimalMin;
+import java.math.BigDecimal;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
+
+
+
 @Entity
 @Getter
 @Builder
 @DynamicInsert
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "MY_SHOP_USER_SHOP")
-public class Shop extends BaseEntity{
+@Table(name = "MY_SHOP_GOODS_PRICE")
+public class ShopGoodsPrice extends BaseEntity{
+
   @Id
-  @Column(name = "SHOP_SEQ", nullable = false)
+  @Column(name = "GOODS_PRICE_SEQ", nullable = false)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long shopSeq;
+  private Long goodsPriceSeq;
 
-  @Size(max = 255, message = "샵 이름은 255 자를 넘을 수 없습니다.")
-  @Column(name = "SHOP_NAME", nullable = false)
-  private String shopName;
-
-  @Column(name = "SHOP_DESCRIPTION", nullable = true)
-  private String shopDescription;
+  @Column(name = "GOODS_PRICE", nullable = false)
+  private BigDecimal goods_price;
 
   @ManyToOne
-  @JoinColumn(name = "USER_SEQ", nullable = false)
-  private User user;
+  @JoinColumn(name = "GOODS_SEQ", nullable = false)
+  private ShopGoods shopGoods;
 
 }

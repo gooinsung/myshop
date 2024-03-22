@@ -7,18 +7,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class UserDto extends BaseDto{
+public class ShopDto extends BaseDto{
+  private Long shopSeq;
+  private String shopName;
+  private String shopDescription;
   private Long userSeq;
-  private String userId;
-  private String provider;
-  private String userName;
-  private String userNickname;
 
 }

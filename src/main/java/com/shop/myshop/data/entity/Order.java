@@ -8,32 +8,39 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Builder
 @DynamicInsert
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "MY_SHOP_USER_SHOP")
-public class Shop extends BaseEntity{
+@Table(name = "MY_SHOP_ORDER")
+public class Order extends BaseEntity{
+
   @Id
-  @Column(name = "SHOP_SEQ", nullable = false)
+  @Column(name = "ORDER_SEQ")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long shopSeq;
+  private Long orderSeq;
 
-  @Size(max = 255, message = "샵 이름은 255 자를 넘을 수 없습니다.")
-  @Column(name = "SHOP_NAME", nullable = false)
-  private String shopName;
+  @Column(name = "ORDER_TOTAL_PRICE", nullable = false)
+  private BigDecimal orderTotalPrice;
 
-  @Column(name = "SHOP_DESCRIPTION", nullable = true)
-  private String shopDescription;
+  @ColumnDefault("0")
+  @Column(name = "ORDER_STATUS", nullable = false)
+  private Integer orderStatus;
+
+  @ManyToOne
+  @JoinColumn(name = "SHOP_SEQ", nullable = false)
+  private Shop shop;
 
   @ManyToOne
   @JoinColumn(name = "USER_SEQ", nullable = false)
