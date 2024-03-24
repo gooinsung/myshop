@@ -32,10 +32,10 @@ public class Shop extends BaseEntity{
   @Column(name = "SHOP_NAME", nullable = false)
   private String shopName;
 
-  @Column(name = "SHOP_DESCRIPTION", nullable = true)
+  @Column(name = "SHOP_DESCRIPTION")
   private String shopDescription;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "USER_SEQ", nullable = false)
   private User user;
 

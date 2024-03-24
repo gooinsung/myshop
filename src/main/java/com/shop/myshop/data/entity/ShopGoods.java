@@ -32,18 +32,18 @@ public class ShopGoods extends BaseEntity{
   @Column(name = "GOODS_NAME", nullable = false)
   private String goodsName;
 
-  @Column(name = "GOODS_DESCRIPTION", nullable = true)
+  @Column(name = "GOODS_DESCRIPTION")
   private String goodsDescription;
 
   @Size(max = 255, message = "상품 이미지 url 주소가 너무 깁니다.")
-  @Column(name = "GOODS_IMG_URL", nullable = true)
+  @Column(name = "GOODS_IMG_URL")
   private String goodsImgUrl;
 
   @Size(max = 255, message = "상품 썸네일 주소가 너무 깁니다.")
   @Column(name = "GOODS_THUMBNAIL")
   private String goodsThumbnail;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "SHOP_SEQ", nullable = false)
   private Shop shop;
 

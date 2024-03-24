@@ -39,11 +39,11 @@ public class Delivery extends BaseEntity{
   @Column(name = "DELIVERY_STATUS", nullable = false)
   private Integer deliveryStatus;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "ORDER_DETAIL_SEQ", nullable = false)
   private OrderDetail orderDetail;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "ORDER_SEQ", nullable = false)
   private Order order;
 

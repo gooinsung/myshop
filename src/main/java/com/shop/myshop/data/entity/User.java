@@ -45,11 +45,11 @@ public class User extends BaseEntity {
   private String userName;
 
   @Size(max = 255, message = "PW 는 255 자를 넘을 수 없습니다.")
-  @Column(name = "USER_PW", nullable = true)
+  @Column(name = "USER_PW")
   private String userPw;
 
   @Size(max = 255, message = "닉네임은 255 자를 넘을 수 없습니다.")
-  @Column(name = "USER_NICKNAME", nullable = true)
+  @Column(name = "USER_NICKNAME")
   private String userNickname;
 
 }

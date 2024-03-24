@@ -21,7 +21,7 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table
+@Table(name = "MY_SHOP_ORDER_DETAIL")
 public class OrderDetail extends BaseEntity {
 
   @Id
@@ -32,15 +32,15 @@ public class OrderDetail extends BaseEntity {
   @Column(name = "GOODS_COUNT", nullable = false)
   private Integer goodsCount;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "ORDER_SEQ", nullable = false)
   private Order order;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "GOODS_SEQ", nullable = false)
   private ShopGoods shopGoods;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "GOODS_PRICE_SEQ", nullable = false)
   private ShopGoodsPrice shopGoodsPrice;
 

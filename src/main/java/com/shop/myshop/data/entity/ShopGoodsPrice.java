@@ -37,7 +37,7 @@ public class ShopGoodsPrice extends BaseEntity{
   @Column(name = "GOODS_PRICE", nullable = false)
   private BigDecimal goods_price;
 
-  @ManyToOne
+  @ManyToOne(optional = false)
   @JoinColumn(name = "GOODS_SEQ", nullable = false)
   private ShopGoods shopGoods;
 
