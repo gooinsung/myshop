@@ -5,8 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,16 +21,18 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "MY_SHOP_GOODS_CATEGORY")
-public class Category extends BaseEntity{
-
+@Table(name = "MY_SHOP_USER_ROLE_MAP")
+public class UserRole extends BaseEntity{
   @Id
-  @Column(name = "CATEGORY_SEQ", nullable = false)
+  @Column(name = "USER_ROLE_SEQ")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long categorySeq;
+  private Long userRoleSeq;
 
-  @Size(max = 255, message = "카테고리 이름은 255 자를 넘을 수 없습니다.")
-  @Column(name = "CATEGORY_NAME", nullable = false)
-  private String categoryName;
+  @ManyToOne
+  @JoinColumn(name = "USER_SEQ")
+  private User user;
 
+  @ManyToOne
+  @JoinColumn(name = "ROLE_SEQ")
+  private Role role;
 }
