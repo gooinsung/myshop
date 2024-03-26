@@ -4,9 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
-public enum OrderStatus {
+public enum Provider {
+  SYSTEM("system"), KAKAO("kakao"), GOOGLE("google"), NAVER("naver");
 
-  BEFORE_ORDER(0), ORDER_COMPLETE(1), ORDER_CANCEL(9);
-
-  private final Integer orderStatus;
+  private final String provider;
 }
