@@ -1,6 +1,5 @@
 package com.shop.myshop.security;
 
-import com.shop.myshop.data.entity.Role;
 import com.shop.myshop.data.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -14,7 +13,6 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +22,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class AuthProvider implements InitializingBean {
   private Key key;
 
@@ -35,8 +33,9 @@ public class AuthProvider implements InitializingBean {
 
   private static final String USER_ID = "userId";
   private static final String AUTHENTICATION_KEY = "role";
+
   @Override
-  public void afterPropertiesSet() throws Exception {
+  public void afterPropertiesSet() {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }

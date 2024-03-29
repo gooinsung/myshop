@@ -127,7 +127,7 @@ public class GlobalExceptionHandler {
   /**
    * Runtimeexception 예외처리
    */
-  @ExceptionHandler(RuntimeException.class)
+/*  @ExceptionHandler(RuntimeException.class)
   protected ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException e,
       HttpServletRequest request) {
     logging(e, request);
@@ -140,7 +140,7 @@ public class GlobalExceptionHandler {
                 e.getMessage()
             )
         );
-  }
+  }*/
 
   /**
    * Validation 예외처리

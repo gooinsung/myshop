@@ -13,24 +13,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
-@Slf4j
 public class UserController {
 
   private final UserService userService;
 
 
   @PostMapping("/sign-up")
-  public ResponseEntity<ResultDto<Boolean>> signUp(@RequestBody @Validated UserDto userDto){
+  public ResponseEntity<ResultDto<Boolean>> signUp(@RequestBody @Validated UserDto userDto) {
     log.info("회원 가입 요청 userDto : {}", userDto);
-    if(1==1){
-      throw new RuntimeException();
-
-    }
     userService.signUp(userDto);
-    return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), Boolean.TRUE));
+    return ResponseEntity.ok()
+        .body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), Boolean.TRUE));
+  }
+
+  @PostMapping("/sign-in")
+  public ResponseEntity<ResultDto<String>> signin(@RequestBody @Validated UserDto userDto) {
+    log.info("로그인 요청 userDto : {}", userDto);
+    return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(),
+        userService.login(userDto)));
   }
 
 
