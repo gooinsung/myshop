@@ -13,12 +13,6 @@ public class ResultDto<T> {
   private String resultMsg;
   private T resultData;
 
-  public ResultDto(final HttpStatus status, final String resultMsg){
-    this.status = status;
-    this.resultMsg = resultMsg;
-    this.resultData = null;
-  }
-
   public static<T> ResultDto<T> res(final HttpStatus status, final String resultMsg){
     return res(status,resultMsg, null);
   }
