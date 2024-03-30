@@ -1,6 +1,7 @@
 package com.shop.myshop.security;
 
 import com.shop.myshop.data.entity.User;
+import com.shop.myshop.security.service.RefreshTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,13 +25,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AuthProvider implements InitializingBean {
+
+  private final RefreshTokenService tokenService;
+
   private Key key;
 
   @Value("${JWT_SECRET_KEY}")
   private String secretKey;
-  @Value("${JWT_EXPIRED_TIME_MS}")
+  @Value("${JWT_ACCESS_TOKEN_EXPIRED_TIME_MS}")
   private long accessTokenExpiredTimeMs;
+  @Value("${JWT_REFRESH_TOKEN_EXPIRED_TIME_MS}")
+  private long refreshTokenExpiredTimeMs;
+
 
   private static final String USER_ID = "userId";
   private static final String AUTHENTICATION_KEY = "role";
@@ -40,25 +49,47 @@ public class AuthProvider implements InitializingBean {
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-  public String generateAccessToken(User user, String role){
+  public GenerateToken generateToken(User user, String role) {
+    return GenerateToken.builder()
+        .accessToken(this.generateAccessToken(user, role))
+        .refreshToken(this.generateRefreshToken(user, role))
+        .build();
+  }
+
+  public String generateAccessToken(User user, String role) {
 
     Claims claims = Jwts.claims();
-    claims.put("userId", user.getUserId());
     claims.put(USER_ID, user.getProvider());
     claims.put(AUTHENTICATION_KEY, role);
 
     long now = new Date().getTime();
-    Date validITY = new Date(now + this.accessTokenExpiredTimeMs);
+    Date validity = new Date(now + this.accessTokenExpiredTimeMs);
 
     return Jwts.builder()
         .setSubject(user.getUserId())
         .setClaims(claims)
         .signWith(key, SignatureAlgorithm.HS512)
-        .setExpiration(validITY)
+        .setExpiration(validity)
         .compact();
   }
 
-  public Authentication getAuthentication(String token){
+  public String generateRefreshToken(User user, String role) {
+    Claims claims = Jwts.claims();
+    claims.put(USER_ID, user.getProvider());
+    claims.put(AUTHENTICATION_KEY, role);
+
+    long now = new Date().getTime();
+    Date validity = new Date(now + this.refreshTokenExpiredTimeMs);
+
+    return Jwts.builder()
+        .setSubject(user.getUserId())
+        .setClaims(claims)
+        .signWith(key, SignatureAlgorithm.HS256)
+        .setExpiration(validity)
+        .compact();
+  }
+
+  public Authentication getAuthentication(String token) {
     Claims claims = Jwts
         .parserBuilder()
         .setSigningKey(key)
@@ -76,16 +107,16 @@ public class AuthProvider implements InitializingBean {
     return new UsernamePasswordAuthenticationToken(userId, token, authorities);
   }
 
-  public void validateToken(String token){
-    try{
+  public void validateToken(String token) {
+    try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-    } catch (SecurityException | MalformedJwtException e){
+    } catch (SecurityException | MalformedJwtException e) {
       System.out.println("잘못된 JWT 서명 입니다.");
-    } catch (ExpiredJwtException e){
+    } catch (ExpiredJwtException e) {
       System.out.println("만료된 JWT 입니다.");
-    } catch (UnsupportedJwtException e){
+    } catch (UnsupportedJwtException e) {
       System.out.println("지원되지 않는 JWT 입니다.");
-    } catch (IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       System.out.println("JWT 토큰이 잘못됐습니다.");
     }
   }

@@ -5,12 +5,14 @@ import com.shop.myshop.data.dto.UserDto;
 import com.shop.myshop.data.entity.Role;
 import com.shop.myshop.data.entity.User;
 import com.shop.myshop.data.entity.UserRole;
-import com.shop.myshop.data.enums.MyshopUserRole;
+import com.shop.myshop.data.enums.MyShopUserRole;
 import com.shop.myshop.data.enums.Provider;
 import com.shop.myshop.data.repository.RoleRepository;
 import com.shop.myshop.data.repository.UserRepository;
 import com.shop.myshop.data.repository.UserRoleRepository;
+import com.shop.myshop.exception.CustomExceptionCode;
 import com.shop.myshop.security.AuthProvider;
+import com.shop.myshop.security.GenerateToken;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,11 +53,12 @@ public class UserService {
     }
 
     // 회원 가입
-    User signUpUser = userRepository.saveAndFlush(UserDto.toEntity(userDto));
-    signUpUser.passwordEncoding(passwordEncoder);
+    User user = UserDto.toEntity(userDto);
+    user.passwordEncoding(passwordEncoder);
+    User signUpUser = userRepository.saveAndFlush(user);
 
     // User Role 삽입
-    Role role = roleRepository.findById(MyshopUserRole.ROLE_USER.getRole())
+    Role role = roleRepository.findById(MyShopUserRole.ROLE_USER.getRole())
         .orElseThrow(() -> new EntityNotFoundException(
             "존재하지 않는 role 입니다. 개발자에게 문의하세요."));
 
@@ -72,7 +75,7 @@ public class UserService {
    *
    * @param userDto
    */
-  public String login(UserDto userDto) {
+  public GenerateToken login(UserDto userDto) {
     if (userDto.getProvider() == null) {
       userDto.setProvider(Provider.SYSTEM.getProvider());
     }
@@ -84,6 +87,10 @@ public class UserService {
       throw new EntityNotFoundException("존재하지 않는 계정입니다.");
     }
 
+    if(!passwordEncoder.matches(userDto.getUserPw(), loginUser.getUserPw())){
+      throw new IllegalArgumentException(CustomExceptionCode.WRONG_PW.getMessgae());
+    }
+
     List<UserRole> roleList = userRoleRepository.findAllByUser(loginUser)
         .orElseThrow(()-> new EntityNotFoundException("유저 역할이 존재하지 않습니다."));
 
@@ -92,7 +99,7 @@ public class UserService {
         .map(Role::getRole)
         .collect(Collectors.joining(","));
 
-    return authProvider.generateAccessToken(loginUser, role);
+    return authProvider.generateToken(loginUser, role);
   }
 
 

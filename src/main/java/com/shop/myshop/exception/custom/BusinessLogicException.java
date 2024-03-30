@@ -7,7 +7,7 @@ import lombok.Getter;
 public class BusinessLogicException extends RuntimeException{
   private final CustomExceptionCode code;
 
-  BusinessLogicException(CustomExceptionCode code){
+  public BusinessLogicException(CustomExceptionCode code){
     super(code.getMessgae());
     this.code = code;
   }

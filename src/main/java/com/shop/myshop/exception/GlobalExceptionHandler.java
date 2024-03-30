@@ -1,6 +1,12 @@
 package com.shop.myshop.exception;
 
-import static com.shop.myshop.exception.CustomExceptionCode.*;
+import static com.shop.myshop.exception.CustomExceptionCode.BUSINESS_LOGIC_EXCEPTION;
+import static com.shop.myshop.exception.CustomExceptionCode.ENTITY_NOT_FOUND;
+import static com.shop.myshop.exception.CustomExceptionCode.FORBIDDEN;
+import static com.shop.myshop.exception.CustomExceptionCode.HTTP_METHOD_NOT_SUPPORTED;
+import static com.shop.myshop.exception.CustomExceptionCode.NOT_FOUND;
+import static com.shop.myshop.exception.CustomExceptionCode.UNAUTHORIZED;
+import static com.shop.myshop.exception.CustomExceptionCode.VALIDATION_PARAMETER_EXCEPTION;
 
 import com.shop.myshop.exception.custom.BusinessLogicException;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +20,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException.Forbidden;
+import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
@@ -37,7 +45,7 @@ public class GlobalExceptionHandler {
 
     List<FieldError> fieldErrors = bindingResult.getFieldErrors();
     for (FieldError fieldError : fieldErrors) {
-      if(!isFirst) {
+      if (!isFirst) {
         sb.append(", ");
       } else {
         isFirst = false;
@@ -93,8 +101,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(NoHandlerFoundException.class)
   protected ResponseEntity<ExceptionResponse> handleNoHandlerFoundException(
       NoHandlerFoundException e, HttpServletRequest request) {
-    log.error("NoHandlerFoundException occured");
-    log.error("Request URL : {}", request.getRequestURI());
+    logging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -105,6 +112,43 @@ public class GlobalExceptionHandler {
             )
         );
   }
+
+  /**
+   * 401 Unauthorized 예외 처리
+   */
+  @ExceptionHandler(Unauthorized.class)
+  protected ResponseEntity<ExceptionResponse> handleUnauthorizedException(
+      Unauthorized e, HttpServletRequest request) {
+    logging(e, request);
+    return ResponseEntity
+        .badRequest()
+        .body(
+            new ExceptionResponse(
+                UNAUTHORIZED.getCode(),
+                UNAUTHORIZED.getMessgae(),
+                e.getMessage()
+            )
+        );
+  }
+
+  /**
+   * 403 Forbidden 예외 처리
+   */
+  @ExceptionHandler(Forbidden.class)
+  protected ResponseEntity<ExceptionResponse> handleForbiddenException(Forbidden e,
+      HttpServletRequest request) {
+    logging(e, request);
+    return ResponseEntity
+        .badRequest()
+        .body(
+            new ExceptionResponse(
+                FORBIDDEN.getCode(),
+                FORBIDDEN.getMessgae(),
+                e.getMessage()
+            )
+        );
+  }
+
 
   /**
    * entity not found 예외처리
@@ -124,23 +168,6 @@ public class GlobalExceptionHandler {
         );
   }
 
-  /**
-   * Runtimeexception 예외처리
-   */
-/*  @ExceptionHandler(RuntimeException.class)
-  protected ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException e,
-      HttpServletRequest request) {
-    logging(e, request);
-    return ResponseEntity
-        .badRequest()
-        .body(
-            new ExceptionResponse(
-                RUNTIME_EXCEPTION.getCode(),
-                RUNTIME_EXCEPTION.getMessgae(),
-                e.getMessage()
-            )
-        );
-  }*/
 
   /**
    * Validation 예외처리
@@ -156,6 +183,24 @@ public class GlobalExceptionHandler {
                 VALIDATION_PARAMETER_EXCEPTION.getCode(),
                 VALIDATION_PARAMETER_EXCEPTION.getMessgae(),
                 createValidationMessage(e.getBindingResult())
+            )
+        );
+  }
+
+  /**
+   * 매개변수 예외 처리
+   */
+  @ExceptionHandler({IllegalArgumentException.class})
+  protected ResponseEntity<ExceptionResponse> handleIllegalArgumentException(
+      IllegalArgumentException e, HttpServletRequest request) {
+    logging(e, request);
+    return ResponseEntity
+        .badRequest()
+        .body(
+            new ExceptionResponse(
+                VALIDATION_PARAMETER_EXCEPTION.getCode(),
+                VALIDATION_PARAMETER_EXCEPTION.getMessgae(),
+                e.getMessage()
             )
         );
   }
