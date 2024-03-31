@@ -2,13 +2,12 @@ package com.shop.myshop.exception;
 
 import static com.shop.myshop.exception.CustomExceptionCode.BUSINESS_LOGIC_EXCEPTION;
 import static com.shop.myshop.exception.CustomExceptionCode.ENTITY_NOT_FOUND;
-import static com.shop.myshop.exception.CustomExceptionCode.FORBIDDEN;
 import static com.shop.myshop.exception.CustomExceptionCode.HTTP_METHOD_NOT_SUPPORTED;
 import static com.shop.myshop.exception.CustomExceptionCode.NOT_FOUND;
-import static com.shop.myshop.exception.CustomExceptionCode.UNAUTHORIZED;
 import static com.shop.myshop.exception.CustomExceptionCode.VALIDATION_PARAMETER_EXCEPTION;
 
 import com.shop.myshop.exception.custom.BusinessLogicException;
+import com.shop.myshop.utils.ExceptionUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -20,24 +19,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException.Forbidden;
-import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  /**
-   * 예외 로깅
-   *
-   * @Param e, request
-   */
-  protected void logging(Exception e, HttpServletRequest request) {
-    log.error(e.getClass().getSimpleName() + "occured");
-    log.error("Request URI : {}", request.getRequestURI());
-    log.error("Request Method : {}", request.getMethod());
-  }
+
 
   private static String createValidationMessage(BindingResult bindingResult) {
     StringBuilder sb = new StringBuilder();
@@ -65,7 +53,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(BusinessLogicException.class)
   protected ResponseEntity<ExceptionResponse> handleBusinessLogicException(BusinessLogicException e,
       HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -83,7 +71,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   protected ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(
       HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -101,7 +89,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(NoHandlerFoundException.class)
   protected ResponseEntity<ExceptionResponse> handleNoHandlerFoundException(
       NoHandlerFoundException e, HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -112,43 +100,6 @@ public class GlobalExceptionHandler {
             )
         );
   }
-
-  /**
-   * 401 Unauthorized 예외 처리
-   */
-  @ExceptionHandler(Unauthorized.class)
-  protected ResponseEntity<ExceptionResponse> handleUnauthorizedException(
-      Unauthorized e, HttpServletRequest request) {
-    logging(e, request);
-    return ResponseEntity
-        .badRequest()
-        .body(
-            new ExceptionResponse(
-                UNAUTHORIZED.getCode(),
-                UNAUTHORIZED.getMessgae(),
-                e.getMessage()
-            )
-        );
-  }
-
-  /**
-   * 403 Forbidden 예외 처리
-   */
-  @ExceptionHandler(Forbidden.class)
-  protected ResponseEntity<ExceptionResponse> handleForbiddenException(Forbidden e,
-      HttpServletRequest request) {
-    logging(e, request);
-    return ResponseEntity
-        .badRequest()
-        .body(
-            new ExceptionResponse(
-                FORBIDDEN.getCode(),
-                FORBIDDEN.getMessgae(),
-                e.getMessage()
-            )
-        );
-  }
-
 
   /**
    * entity not found 예외처리
@@ -175,7 +126,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({BindException.class})
   protected ResponseEntity<ExceptionResponse> handleBindException(BindException e,
       HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -193,7 +144,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({IllegalArgumentException.class})
   protected ResponseEntity<ExceptionResponse> handleIllegalArgumentException(
       IllegalArgumentException e, HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(

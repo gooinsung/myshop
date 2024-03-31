@@ -1,6 +1,9 @@
 package com.shop.myshop.security;
 
+import com.shop.myshop.api.user.query.UserQueryRepository;
+import com.shop.myshop.data.dto.UserDto;
 import com.shop.myshop.data.entity.User;
+import com.shop.myshop.exception.custom.AuthTokenException;
 import com.shop.myshop.security.service.RefreshTokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -10,12 +13,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,11 +29,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthProvider implements InitializingBean {
 
   private final RefreshTokenService tokenService;
+  private final UserQueryRepository userQueryRepository;
 
   private Key key;
 
@@ -41,6 +48,7 @@ public class AuthProvider implements InitializingBean {
 
 
   private static final String USER_ID = "userId";
+  private static final String PROVIDER = "provider";
   private static final String AUTHENTICATION_KEY = "role";
 
   @Override
@@ -59,7 +67,8 @@ public class AuthProvider implements InitializingBean {
   public String generateAccessToken(User user, String role) {
 
     Claims claims = Jwts.claims();
-    claims.put(USER_ID, user.getProvider());
+    claims.put(USER_ID, user.getUserId());
+    claims.put(PROVIDER, user.getProvider());
     claims.put(AUTHENTICATION_KEY, role);
 
     long now = new Date().getTime();
@@ -75,7 +84,8 @@ public class AuthProvider implements InitializingBean {
 
   public String generateRefreshToken(User user, String role) {
     Claims claims = Jwts.claims();
-    claims.put(USER_ID, user.getProvider());
+    claims.put(USER_ID, user.getUserId());
+    claims.put(PROVIDER, user.getProvider());
     claims.put(AUTHENTICATION_KEY, role);
 
     long now = new Date().getTime();
@@ -97,27 +107,37 @@ public class AuthProvider implements InitializingBean {
         .parseClaimsJws(token)
         .getBody();
 
-    Object userId = claims.get(USER_ID);
+
+    UserDto userDto = UserDto.builder()
+        .userId((String) claims.get(USER_ID))
+        .provider((String) claims.get(PROVIDER))
+        .build();
+
+    User principal = userQueryRepository.getUserDtoByIdAndProvider(userDto);
+
+    if(principal == null)
+      throw new AuthTokenException("존재하지 않는 계정입니다.");
+
 
     Collection<? extends GrantedAuthority> authorities =
         Arrays.stream(claims.get(AUTHENTICATION_KEY).toString().split(","))
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
 
-    return new UsernamePasswordAuthenticationToken(userId, token, authorities);
+    return new UsernamePasswordAuthenticationToken(principal, token, authorities);
   }
 
   public void validateToken(String token) {
     try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-    } catch (SecurityException | MalformedJwtException e) {
-      System.out.println("잘못된 JWT 서명 입니다.");
+    } catch (SecurityException | MalformedJwtException | SignatureException e) {
+      log.error("잘못된 JWT 서명 입니다.");
     } catch (ExpiredJwtException e) {
-      System.out.println("만료된 JWT 입니다.");
+      log.error("만료된 JWT 입니다.");
     } catch (UnsupportedJwtException e) {
-      System.out.println("지원되지 않는 JWT 입니다.");
+      log.error("지원되지 않는 JWT 입니다.");
     } catch (IllegalArgumentException e) {
-      System.out.println("JWT 토큰이 잘못됐습니다.");
+      log.error("JWT 토큰이 잘못됐습니다.");
     }
   }
 }

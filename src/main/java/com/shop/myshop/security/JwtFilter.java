@@ -27,19 +27,11 @@ public class JwtFilter extends OncePerRequestFilter {
       FilterChain filterChain) throws ServletException, IOException {
     log.info("===================== AuthFilter =====================");
     String accessToken = this.resolveToken(request);
-
-    try {
       if (StringUtils.hasText(accessToken)) {
         authProvider.validateToken(accessToken);
         Authentication authentication = authProvider.getAuthentication(accessToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
-      } else {
-        throw new AuthTokenException("유효한 JWT 토큰이 없습니다.");
       }
-    } catch (AuthTokenException e){
-      log.error("토큰 없음");
-    }
 
     filterChain.doFilter(request, response);
   }
@@ -48,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
     String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(0, 7);
+      return bearerToken.substring(7);
     }
 
     return null;

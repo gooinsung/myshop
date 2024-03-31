@@ -1,10 +1,8 @@
 package com.shop.myshop.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shop.myshop.security.AuthProvider;
 import com.shop.myshop.security.JwtExceptionFilter;
 import com.shop.myshop.security.JwtFilter;
-import com.shop.myshop.security.ServiceAuthenticationEntryPoint;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -29,7 +27,6 @@ public class SecurityConfig {
 
   private final AuthProvider authProvider;
   private final JwtExceptionFilter jwtExceptionFilter;
-  private final ObjectMapper objectMapper;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -41,8 +38,8 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/user/**").permitAll()
-            .requestMatchers("/shop").authenticated()
-            .requestMatchers("/admin").hasRole("ADMIN")
+            .requestMatchers("/shop/**").authenticated()
+            .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().permitAll());
 
     return http.build();

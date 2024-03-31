@@ -7,8 +7,8 @@ public enum CustomExceptionCode {
 
   HTTP_METHOD_NOT_SUPPORTED("H001", "지원하지 않는 Http Method 입니다."),
   NOT_FOUND("H002", "존재하지 않는 도메인 입니다."),
-  UNAUTHORIZED("H003", "인증되지 않은 접근입니다."),
-  FORBIDDEN("H004", "해당 접근에 대한 권한이 없습니다."),
+  UNAUTHORIZED("H401", "인증되지 않은 접근입니다."),
+  FORBIDDEN("H403", "해당 접근에 대한 권한이 없습니다."),
   AUTHENTICATION_FAILED("H005", "인증에 실패하였습니다."),
 
 
