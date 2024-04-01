@@ -4,7 +4,7 @@ import static com.shop.myshop.exception.CustomExceptionCode.AUTHENTICATION_FAILE
 import static com.shop.myshop.exception.CustomExceptionCode.UNAUTHORIZED;
 
 import com.shop.myshop.exception.custom.AuthTokenException;
-import com.shop.myshop.utils.ErrorMessageUtil;
+import com.shop.myshop.utils.JsonMessageUtil;
 import com.shop.myshop.utils.ExceptionUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -35,13 +35,13 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
       ExceptionUtil.errorLogging(e, request);
       response.addHeader("Content-Type", "application/json; charset=UTF-8");
       response.getWriter().write(Objects.requireNonNull(
-          ErrorMessageUtil.makeErrorJson(AUTHENTICATION_FAILED.getCode(),
+          JsonMessageUtil.makeErrorJson(AUTHENTICATION_FAILED.getCode(),
               AUTHENTICATION_FAILED.getMessgae(), e.getMessage())));
     } catch (SecurityException | MalformedJwtException | SignatureException e) {
       ExceptionUtil.errorLogging(e, request);
       response.addHeader("Content-Type", "application/json; charset=UTF-8");
       response.getWriter().write(Objects.requireNonNull(
-          ErrorMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
+          JsonMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
               UNAUTHORIZED.getMessgae(),
               e.getMessage())
       ));
@@ -49,7 +49,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
       ExceptionUtil.errorLogging(e, request);
       response.addHeader("Content-Type", "application/json; charset=UTF-8");
       response.getWriter().write(Objects.requireNonNull(
-          ErrorMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
+          JsonMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
               UNAUTHORIZED.getMessgae(),
               e.getMessage())
       ));
@@ -57,7 +57,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
       ExceptionUtil.errorLogging(e, request);
       response.addHeader("Content-Type", "application/json; charset=UTF-8");
       response.getWriter().write(Objects.requireNonNull(
-          ErrorMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
+          JsonMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
               UNAUTHORIZED.getMessgae(),
               e.getMessage())
       ));
@@ -65,7 +65,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
       ExceptionUtil.errorLogging(e, request);
       response.addHeader("Content-Type", "application/json; charset=UTF-8");
       response.getWriter().write(Objects.requireNonNull(
-          ErrorMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
+          JsonMessageUtil.makeErrorJson(UNAUTHORIZED.getCode(),
               UNAUTHORIZED.getMessgae(),
               e.getMessage())
       ));

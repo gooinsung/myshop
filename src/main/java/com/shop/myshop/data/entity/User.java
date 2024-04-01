@@ -33,7 +33,7 @@ public class User extends BaseEntity {
 
   @Email(message = "이메일 형식을 확인하세요.")
   @Size(max = 255, message = "ID 는 255 자를 넘을 수 없습니다.")
-  @Column(name = "USER_ID", nullable = false)
+  @Column(name = "USER_ID")
   private String userId;
 
   @Size(max=255, message = "제공자를 입력하세요")

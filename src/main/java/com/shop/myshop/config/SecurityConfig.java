@@ -1,5 +1,7 @@
 package com.shop.myshop.config;
 
+import com.shop.myshop.api.oauth2.service.CustomOAuth2UserService;
+import com.shop.myshop.api.oauth2.service.OAuthAuthenticationSuccessHandler;
 import com.shop.myshop.security.AuthProvider;
 import com.shop.myshop.security.JwtExceptionFilter;
 import com.shop.myshop.security.JwtFilter;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,19 +31,33 @@ public class SecurityConfig {
   private final AuthProvider authProvider;
   private final JwtExceptionFilter jwtExceptionFilter;
 
+  private final OAuthAuthenticationSuccessHandler oAuthAuthenticationSuccessHandler;
+  private final CustomOAuth2UserService customOAuth2UserService;
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .formLogin(FormLoginConfigurer::disable)
         .addFilterBefore(new JwtFilter(authProvider), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtExceptionFilter, JwtFilter.class)
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/user/**").permitAll()
+            .requestMatchers("/login/**").permitAll()
+            .requestMatchers("/login/oauth2/code/**").permitAll()
             .requestMatchers("/shop/**").authenticated()
             .requestMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().permitAll());
+
+    http.oauth2Login(httpSecurityOAuth2LoginConfigurer ->
+        httpSecurityOAuth2LoginConfigurer
+            .loginPage("/login")
+            .successHandler(oAuthAuthenticationSuccessHandler)
+            .userInfoEndpoint(userInfoEndpointConfig ->
+                userInfoEndpointConfig.userService(customOAuth2UserService))
+        );
+
 
     return http.build();
   }
