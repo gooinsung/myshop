@@ -8,11 +8,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
 @Builder
 @DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MY_SHOP_USER",
@@ -28,7 +31,7 @@ public class User extends BaseEntity {
 
   @Email(message = "이메일 형식을 확인하세요.")
   @Size(max = 255, message = "ID 는 255 자를 넘을 수 없습니다.")
-  @Column(name = "USER_ID", nullable = false)
+  @Column(name = "USER_ID")
   private String userId;
 
   @Size(max=255, message = "제공자를 입력하세요")
@@ -47,4 +50,7 @@ public class User extends BaseEntity {
   @Column(name = "USER_NICKNAME")
   private String userNickname;
 
+  public void passwordEncoding(PasswordEncoder encoder){
+    this.userPw = encoder.encode(this.userPw);
+  }
 }

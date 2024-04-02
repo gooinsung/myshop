@@ -1,8 +1,13 @@
 package com.shop.myshop.exception;
 
-import static com.shop.myshop.exception.CustomExceptionCode.*;
+import static com.shop.myshop.exception.CustomExceptionCode.BUSINESS_LOGIC_EXCEPTION;
+import static com.shop.myshop.exception.CustomExceptionCode.ENTITY_NOT_FOUND;
+import static com.shop.myshop.exception.CustomExceptionCode.HTTP_METHOD_NOT_SUPPORTED;
+import static com.shop.myshop.exception.CustomExceptionCode.NOT_FOUND;
+import static com.shop.myshop.exception.CustomExceptionCode.VALIDATION_PARAMETER_EXCEPTION;
 
 import com.shop.myshop.exception.custom.BusinessLogicException;
+import com.shop.myshop.utils.ExceptionUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -20,16 +25,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-  /**
-   * 예외 로깅
-   *
-   * @Param e, request
-   */
-  protected void logging(Exception e, HttpServletRequest request) {
-    log.error(e.getClass().getSimpleName() + "occured");
-    log.error("Request URI : {}", request.getRequestURI());
-    log.error("Request Method : {}", request.getMethod());
-  }
+
 
   private static String createValidationMessage(BindingResult bindingResult) {
     StringBuilder sb = new StringBuilder();
@@ -37,7 +33,7 @@ public class GlobalExceptionHandler {
 
     List<FieldError> fieldErrors = bindingResult.getFieldErrors();
     for (FieldError fieldError : fieldErrors) {
-      if(!isFirst) {
+      if (!isFirst) {
         sb.append(", ");
       } else {
         isFirst = false;
@@ -57,7 +53,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(BusinessLogicException.class)
   protected ResponseEntity<ExceptionResponse> handleBusinessLogicException(BusinessLogicException e,
       HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -75,7 +71,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   protected ResponseEntity<ExceptionResponse> handleHttpRequestMethodNotSupportedException(
       HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -93,8 +89,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(NoHandlerFoundException.class)
   protected ResponseEntity<ExceptionResponse> handleNoHandlerFoundException(
       NoHandlerFoundException e, HttpServletRequest request) {
-    log.error("NoHandlerFoundException occured");
-    log.error("Request URL : {}", request.getRequestURI());
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -124,23 +119,6 @@ public class GlobalExceptionHandler {
         );
   }
 
-  /**
-   * Runtimeexception 예외처리
-   */
-  @ExceptionHandler(RuntimeException.class)
-  protected ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException e,
-      HttpServletRequest request) {
-    logging(e, request);
-    return ResponseEntity
-        .badRequest()
-        .body(
-            new ExceptionResponse(
-                RUNTIME_EXCEPTION.getCode(),
-                RUNTIME_EXCEPTION.getMessgae(),
-                e.getMessage()
-            )
-        );
-  }
 
   /**
    * Validation 예외처리
@@ -148,7 +126,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({BindException.class})
   protected ResponseEntity<ExceptionResponse> handleBindException(BindException e,
       HttpServletRequest request) {
-    logging(e, request);
+    ExceptionUtil.errorLogging(e, request);
     return ResponseEntity
         .badRequest()
         .body(
@@ -156,6 +134,24 @@ public class GlobalExceptionHandler {
                 VALIDATION_PARAMETER_EXCEPTION.getCode(),
                 VALIDATION_PARAMETER_EXCEPTION.getMessgae(),
                 createValidationMessage(e.getBindingResult())
+            )
+        );
+  }
+
+  /**
+   * 매개변수 예외 처리
+   */
+  @ExceptionHandler({IllegalArgumentException.class})
+  protected ResponseEntity<ExceptionResponse> handleIllegalArgumentException(
+      IllegalArgumentException e, HttpServletRequest request) {
+    ExceptionUtil.errorLogging(e, request);
+    return ResponseEntity
+        .badRequest()
+        .body(
+            new ExceptionResponse(
+                VALIDATION_PARAMETER_EXCEPTION.getCode(),
+                VALIDATION_PARAMETER_EXCEPTION.getMessgae(),
+                e.getMessage()
             )
         );
   }

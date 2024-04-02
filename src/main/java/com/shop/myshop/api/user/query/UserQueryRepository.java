@@ -3,6 +3,7 @@ package com.shop.myshop.api.user.query;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shop.myshop.data.dto.UserDto;
+import com.shop.myshop.data.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,11 +16,11 @@ public class UserQueryRepository {
 
   private final JPAQueryFactory queryFactory;
 
-  public UserDto getUserDtoByIdAndProvider(UserDto userDto){
+  public User getUserDtoByIdAndProvider(UserDto userDto){
     return queryFactory
         .select(
             Projections.fields(
-                UserDto.class,
+                User.class,
                 user.userSeq,
                 user.userId,
                 user.provider,

@@ -28,11 +28,11 @@ public class UserDto extends BaseDto{
   private String userPw;
   private String userNickname;
 
-  public static User toEntity(UserDto userDto, PasswordEncoder encoder){
+  public static User toEntity(UserDto userDto){
     return User.builder()
         .userId(userDto.getUserId())
         .provider(userDto.getProvider())
-        .userPw(encoder.encode(userDto.userPw))
+        .userPw(userDto.userPw)
         .userName(userDto.getUserName())
         .userNickname(userDto.getUserNickname() != null ? userDto.getUserNickname() : null)
         .build();
