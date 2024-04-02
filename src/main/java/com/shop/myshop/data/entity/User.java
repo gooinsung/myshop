@@ -1,11 +1,6 @@
 package com.shop.myshop.data.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -23,7 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "MY_SHOP_USER")
+@Table(name = "MY_SHOP_USER",
+indexes = {
+        @Index(name = "idx_ID_PROVIDER", columnList = "USER_ID, PROVIDER", unique = true)
+})
 public class User extends BaseEntity {
 
   @Id
