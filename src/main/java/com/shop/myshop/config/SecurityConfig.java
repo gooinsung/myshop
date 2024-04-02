@@ -5,7 +5,9 @@ import com.shop.myshop.api.oauth2.service.OAuthAuthenticationSuccessHandler;
 import com.shop.myshop.security.AuthProvider;
 import com.shop.myshop.security.JwtExceptionFilter;
 import com.shop.myshop.security.JwtFilter;
+
 import java.util.Arrays;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -28,68 +30,70 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-  private final AuthProvider authProvider;
-  private final JwtExceptionFilter jwtExceptionFilter;
+    private final AuthProvider authProvider;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
-  private final OAuthAuthenticationSuccessHandler oAuthAuthenticationSuccessHandler;
-  private final CustomOAuth2UserService customOAuth2UserService;
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .formLogin(FormLoginConfigurer::disable)
-        .addFilterBefore(new JwtFilter(authProvider), UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtExceptionFilter, JwtFilter.class)
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/user/**").permitAll()
-            .requestMatchers("/login/**").permitAll()
-            .requestMatchers("/login/oauth2/code/**").permitAll()
-            .requestMatchers("/shop/**").authenticated()
-            .requestMatchers("/admin/**").hasRole("ADMIN")
-            .anyRequest().permitAll());
+    private final OAuthAuthenticationSuccessHandler oAuthAuthenticationSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
-    http.oauth2Login(httpSecurityOAuth2LoginConfigurer ->
-        httpSecurityOAuth2LoginConfigurer
-            .loginPage("/login")
-            .successHandler(oAuthAuthenticationSuccessHandler)
-            .userInfoEndpoint(userInfoEndpointConfig ->
-                userInfoEndpointConfig.userService(customOAuth2UserService))
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .formLogin(FormLoginConfigurer::disable)
+                .addFilterBefore(new JwtFilter(authProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtFilter.class)
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/payment/**").permitAll()
+                        .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/login/**").permitAll()
+                        .requestMatchers("/login/oauth2/code/**").permitAll()
+                        .requestMatchers("/shop/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().permitAll());
+
+        http.oauth2Login(httpSecurityOAuth2LoginConfigurer ->
+                httpSecurityOAuth2LoginConfigurer
+                        .loginPage("/login")
+                        .successHandler(oAuthAuthenticationSuccessHandler)
+                        .userInfoEndpoint(userInfoEndpointConfig ->
+                                userInfoEndpointConfig.userService(customOAuth2UserService))
         );
 
 
-    return http.build();
-  }
+        return http.build();
+    }
 
-  /**
-   * resource path permit
-   */
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return web -> web
-        .ignoring()
-        .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-  }
+    /**
+     * resource path permit
+     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web
+                .ignoring()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
 
 
-  @Bean
-  public BCryptPasswordEncoder bCryptPasswordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("*"));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE"));
-    configuration.setAllowedHeaders(
-        Arrays.asList("X-Requested-With", "Content-Type", "Authorization", "X-XSRF-token"));
-    configuration.setAllowCredentials(false);
-    configuration.setMaxAge(3600L);
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(
+                Arrays.asList("X-Requested-With", "Content-Type", "Authorization", "X-XSRF-token"));
+        configuration.setAllowCredentials(false);
+        configuration.setMaxAge(3600L);
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
