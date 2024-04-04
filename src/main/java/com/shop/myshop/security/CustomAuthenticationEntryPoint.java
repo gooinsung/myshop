@@ -20,21 +20,10 @@ import org.springframework.stereotype.Component;
  * */
 @Slf4j
 @Component
-public class ServiceAuthenticationEntryPoint implements AuthenticationEntryPoint {
-  private ObjectMapper objectMapper;
-  public ServiceAuthenticationEntryPoint(final ObjectMapper objectMapper){
-    this.objectMapper = objectMapper;
-  }
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response,
       AuthenticationException authException) throws IOException, ServletException {
-    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-    response.setCharacterEncoding("UTF-8");
-
-    Map<String, Object> commenceResponse = new HashMap<>();
-    commenceResponse.put("code", "401 ERROR");
-    commenceResponse.put("message", "API Access was detected from unauthenticated user.");
-    objectMapper.writeValue(response.getWriter(), commenceResponse);
+      response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
   }
 }

@@ -2,9 +2,7 @@ package com.shop.myshop.config;
 
 import com.shop.myshop.api.oauth2.service.CustomOAuth2UserService;
 import com.shop.myshop.api.oauth2.service.OAuthAuthenticationSuccessHandler;
-import com.shop.myshop.security.AuthProvider;
-import com.shop.myshop.security.JwtExceptionFilter;
-import com.shop.myshop.security.JwtFilter;
+import com.shop.myshop.security.*;
 
 import java.util.Arrays;
 
@@ -40,23 +38,28 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .addFilterBefore(new JwtFilter(authProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtFilter.class)
+                .exceptionHandling(handle ->{
+                    handle.accessDeniedHandler(new CustomAuthenticationDeniedHandler())
+                            .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+                })
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/shop/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/payment/**").permitAll()
                         .requestMatchers("/user/**").permitAll()
                         .requestMatchers("/login/**").permitAll()
                         .requestMatchers("/login/oauth2/code/**").permitAll()
-                        .requestMatchers("/shop/**").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
                         .anyRequest().permitAll());
 
         http.oauth2Login(httpSecurityOAuth2LoginConfigurer ->
                 httpSecurityOAuth2LoginConfigurer
-                        .loginPage("/login")
                         .successHandler(oAuthAuthenticationSuccessHandler)
                         .userInfoEndpoint(userInfoEndpointConfig ->
                                 userInfoEndpointConfig.userService(customOAuth2UserService))
