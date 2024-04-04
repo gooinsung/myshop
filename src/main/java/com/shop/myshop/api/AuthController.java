@@ -38,9 +38,7 @@ public class AuthController {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenService refreshTokenService;
     private final AuthProvider authProvider;
-    private final UserQueryRepository userQueryRepository;
     private final UserRoleRepository userRoleRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     @PostMapping("/token/logout")

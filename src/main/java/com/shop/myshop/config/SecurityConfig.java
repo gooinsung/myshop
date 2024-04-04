@@ -53,8 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/payment/**").permitAll()
                         .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/login/**").permitAll()
-                        .requestMatchers("/login/oauth2/code/**").permitAll()
+                        .requestMatchers("/oauth/**").permitAll()
 
                         .anyRequest().permitAll());
 

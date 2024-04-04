@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
-@RequestMapping("/login")
+@RequestMapping("/oauth2")
 @RequiredArgsConstructor
 public class OAuthLoginController {
 
-  @GetMapping("/oauth2")
+  @GetMapping("/login")
   public String oAuthLoginPage(){
     return "login";
   }
