@@ -1,18 +1,7 @@
 package com.shop.myshop.data.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -23,18 +12,22 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "MY_SHOP_USER_ROLE_MAP")
-public class UserRole extends BaseEntity{
-  @Id
-  @Column(name = "USER_ROLE_SEQ")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long userRoleSeq;
+@ToString
+@Table(name = "MY_SHOP_USER_ROLE_MAP",
+        indexes = {
+                @Index(name = "idx_USER_ROLE", columnList = "USER_SEQ, ROLE_SEQ", unique = true)
+        })
+public class UserRole extends BaseEntity {
+    @Id
+    @Column(name = "USER_ROLE_SEQ")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userRoleSeq;
 
-  @ManyToOne
-  @JoinColumn(name = "USER_SEQ")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "USER_SEQ")
+    private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "ROLE_SEQ")
-  private Role role;
+    @ManyToOne
+    @JoinColumn(name = "ROLE")
+    private Role role;
 }

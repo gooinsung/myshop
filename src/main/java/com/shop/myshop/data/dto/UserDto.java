@@ -20,11 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EqualsAndHashCode(callSuper = true)
 public class UserDto extends BaseDto{
   private Long userSeq;
-  @Email
+  @Email(message = "이메일 형식을 맞춰주세요.")
+  @NotBlank(message = "아이디를 입력해 주세요.")
   private String userId;
   private String provider;
   private String userName;
-  @NotBlank
+  @NotBlank(message = "비밀번호를 입력해 주세요.")
   private String userPw;
   private String userNickname;
 
