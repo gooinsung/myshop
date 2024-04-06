@@ -2,6 +2,7 @@ package com.shop.myshop.api.user.query;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.shop.myshop.data.dto.UserRoleDto;
 import com.shop.myshop.data.entity.Role;
 import com.shop.myshop.data.entity.User;
 import com.shop.myshop.data.entity.UserRole;
@@ -17,12 +18,14 @@ public class UserRoleQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
 
-    public boolean checkUserRole(User user, Role role){
+    public boolean checkUserRole(User user, Role role) {
         return jpaQueryFactory.
                 select(
                         Projections.fields(
-                                UserRole.class,
-                                userRole.userRoleSeq
+                                UserRoleDto.class,
+                                userRole.userRoleSeq,
+                                userRole.user.userSeq,
+                                userRole.role.role
                         )
                 ).from(userRole)
                 .where(userRole.user.userSeq.eq(user.getUserSeq()),
@@ -30,7 +33,7 @@ public class UserRoleQueryRepository {
                 .fetchOne() == null;
     }
 
-    public UserRole test(User user, Role role){
+    public UserRole test(User user, Role role) {
         return jpaQueryFactory.
                 select(
                         Projections.fields(

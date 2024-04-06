@@ -8,13 +8,12 @@ import com.shop.myshop.data.enums.MyShopUserRole;
 import com.shop.myshop.data.repository.RoleRepository;
 import com.shop.myshop.data.repository.UserRepository;
 import com.shop.myshop.data.repository.UserRoleRepository;
+import com.shop.myshop.response.CustomResponseCode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -28,7 +27,7 @@ public class AdminService {
     private final UserRoleQueryRepository userRoleQueryRepository;
 
     @Transactional
-    public boolean registerAdmin(Long userSeq) {
+    public CustomResponseCode registerAdmin(Long userSeq) {
 
         User user = userRepository.findById(userSeq).orElseThrow(() -> {
             throw new EntityNotFoundException("존재하지 않는 User 입니다.");
@@ -36,10 +35,8 @@ public class AdminService {
 
         Role adminRole = roleRepository.findById(MyShopUserRole.ROLE_ADMIN.getRole()).get();
 
-        System.out.println(userRoleQueryRepository.test(user,adminRole));
-
-        if(userRoleQueryRepository.checkUserRole(user,adminRole)){
-            return false;
+        if (!userRoleQueryRepository.checkUserRole(user, adminRole)) {
+            return CustomResponseCode.EXISTS_ENTITY;
         }
 
         UserRole userAdminRole = UserRole.builder()
@@ -48,7 +45,7 @@ public class AdminService {
                 .build();
 
         userRoleRepository.saveAndFlush(userAdminRole);
-        return true;
+        return CustomResponseCode.SUCCESS;
     }
 
 }
