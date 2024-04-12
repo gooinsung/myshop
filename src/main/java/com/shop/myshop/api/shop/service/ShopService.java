@@ -7,4 +7,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ShopService {
 
+    public void test() {
+        try{
+            Thread.sleep(1000L);
+        }catch (Exception e){
+        }
+        System.out.println("test");
+    }
+
 }
