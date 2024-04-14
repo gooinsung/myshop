@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @Slf4j
 @RestController
 @RequestMapping("/s3")
@@ -21,8 +23,9 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping
-    public ResponseEntity<ResultDto<FileResponseDto>> fileUpload(@ModelAttribute FileRequestDto requestDto) {
+    public ResponseEntity<ResultDto<FileResponseDto>> fileUpload(@ModelAttribute FileRequestDto requestDto) throws IOException {
         log.info("File Upload Request : {}", requestDto);
-        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), fileService.uploadFile(requestDto)));
+        fileService.test(requestDto);
+        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString()));
     }
 }
