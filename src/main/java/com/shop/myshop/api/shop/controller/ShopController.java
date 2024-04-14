@@ -21,6 +21,7 @@ public class ShopController {
 
   @GetMapping("/{shopSeq}")
   public ResponseEntity<ResultDto<List<Shop>>> mySHop(@PathVariable Long shopSeq){
+    shopService.test();
     return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString()));
   }
 }
