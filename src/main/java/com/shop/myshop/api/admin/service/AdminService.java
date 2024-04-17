@@ -27,11 +27,7 @@ public class AdminService {
     private final UserRoleQueryRepository userRoleQueryRepository;
 
     @Transactional
-    public CustomResponseCode registerAdmin(Long userSeq) {
-
-        User user = userRepository.findById(userSeq).orElseThrow(() -> {
-            throw new EntityNotFoundException("존재하지 않는 User 입니다.");
-        });
+    public CustomResponseCode registerAdmin(User user) {
 
         Role adminRole = roleRepository.findById(MyShopUserRole.ROLE_ADMIN.getRole()).get();
 

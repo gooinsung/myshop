@@ -1,13 +1,7 @@
 package com.shop.myshop.data.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.shop.myshop.data.dto.ShopDto;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +17,10 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "MY_SHOP_USER_SHOP")
+@Table(name = "MY_SHOP_USER_SHOP",
+        indexes = {
+                @Index(name = "idx_USER_SHOP", columnList = "USER_SEQ", unique = true)
+        })
 public class Shop extends BaseEntity{
   @Id
   @Column(name = "SHOP_SEQ", nullable = false)
@@ -40,5 +37,15 @@ public class Shop extends BaseEntity{
   @ManyToOne(optional = false)
   @JoinColumn(name = "USER_SEQ", nullable = false)
   private User user;
+
+  public ShopDto of(){
+    return ShopDto
+            .builder()
+            .shopSeq(this.shopSeq)
+            .shopName(this.shopName)
+            .shopDescription(this.shopDescription)
+            .userSeq(this.user.getUserSeq())
+            .build();
+  }
 
 }

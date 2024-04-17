@@ -3,6 +3,7 @@ package com.shop.myshop.api.user.controller;
 import com.shop.myshop.api.admin.service.AdminService;
 import com.shop.myshop.api.user.service.UserService;
 import com.shop.myshop.data.dto.UserDto;
+import com.shop.myshop.data.entity.User;
 import com.shop.myshop.data.response.ResultDto;
 import com.shop.myshop.response.CustomResponseCode;
 import com.shop.myshop.security.GenerateToken;
@@ -10,8 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -38,9 +43,10 @@ public class UserController {
                 userService.login(userDto)));
     }
 
-    @PostMapping("/admin/{userSeq}")
-    public ResponseEntity<ResultDto<CustomResponseCode>> registAdmin(@PathVariable(required = true) @Validated Long userSeq) {
-        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), adminService.registerAdmin(userSeq)));
+    @PostMapping("/admin")
+    public ResponseEntity<ResultDto<CustomResponseCode>> registAdmin(@AuthenticationPrincipal User user) {
+        log.info("어드민 승급 요청 user : {}", user);
+        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), adminService.registerAdmin(user)));
     }
 
 
