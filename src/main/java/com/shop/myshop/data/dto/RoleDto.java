@@ -13,7 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class RoleDto extends BaseDto{
-  private String role;
+public class RoleDto extends BaseDto {
+    private String role;
 
 }

@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public enum CustomResponseCode {
 
-    SUCCESS("000","요청 성공"),
+    SUCCESS("000", "요청 성공"),
     FAIL("200", "요청 실패"),
-    
-    
-    EXISTS_ENTITY("001","이미 존재하는 엔티티 입니다."),
+
+
+    EXISTS_ENTITY("001", "이미 존재하는 엔티티 입니다."),
     ;
 
     private String code;

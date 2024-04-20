@@ -13,8 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class CategoryDto extends BaseDto{
-  private Long categorySeq;
-  private String categoryName;
+public class CategoryDto extends BaseDto {
+    private Long categorySeq;
+    private String categoryName;
 
 }

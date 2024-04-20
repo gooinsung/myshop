@@ -16,13 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShopService {
     private final ShopRepository shopRepository;
     private final UserRepository userRepository;
-    public void test() {
-        try {
-            Thread.sleep(1000L);
-        } catch (Exception e) {
-        }
-        System.out.println("test");
-    }
 
     @Transactional
     public ShopDto createShop(ShopDto shopDto) {

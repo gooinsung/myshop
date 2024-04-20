@@ -4,12 +4,12 @@ import com.shop.myshop.exception.CustomExceptionCode;
 import lombok.Getter;
 
 @Getter
-public class BusinessLogicException extends RuntimeException{
-  private final CustomExceptionCode code;
+public class BusinessLogicException extends RuntimeException {
+    private final CustomExceptionCode code;
 
-  public BusinessLogicException(CustomExceptionCode code){
-    super(code.getMessgae());
-    this.code = code;
-  }
+    public BusinessLogicException(CustomExceptionCode code) {
+        super(code.getMessgae());
+        this.code = code;
+    }
 
 }

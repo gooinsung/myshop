@@ -1,6 +1,7 @@
 package com.shop.myshop.data.dto;
 
 import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +15,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class ShopGoodsPriceDto extends BaseDto{
-  private Long goodsPriceSeq;
-  private BigDecimal goodsPrice;
-  private Long goodsSeq;
+public class ShopGoodsPriceDto extends BaseDto {
+    private Long goodsPriceSeq;
+    private BigDecimal goodsPrice;
+    private Long goodsSeq;
 
 }

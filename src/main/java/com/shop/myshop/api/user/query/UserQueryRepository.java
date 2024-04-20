@@ -14,28 +14,28 @@ import static com.shop.myshop.data.entity.QUser.user;
 @RequiredArgsConstructor
 public class UserQueryRepository {
 
-  private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
-  public User getUserDtoByIdAndProvider(UserDto userDto){
-    return queryFactory
-        .select(
-            Projections.fields(
-                User.class,
-                user.userSeq,
-                user.userId,
-                user.provider,
-                user.userPw,
-                user.userName,
-                user.userNickname,
-                user.createdAt,
-                user.updatedAt,
-                user.isDeleted
-            )
-    ).from(user)
-        .where(userDto.getUserId().isBlank() ? null : user.userId.eq(userDto.getUserId())
-            , userDto.getProvider().isBlank() ? null : user.provider.eq(userDto.getProvider())
-            , user.isDeleted.eq(Boolean.FALSE)
-        ).fetchOne();
+    public User getUserDtoByIdAndProvider(UserDto userDto) {
+        return queryFactory
+                .select(
+                        Projections.fields(
+                                User.class,
+                                user.userSeq,
+                                user.userId,
+                                user.provider,
+                                user.userPw,
+                                user.userName,
+                                user.userNickname,
+                                user.createdAt,
+                                user.updatedAt,
+                                user.isDeleted
+                        )
+                ).from(user)
+                .where(userDto.getUserId().isBlank() ? null : user.userId.eq(userDto.getUserId())
+                        , userDto.getProvider().isBlank() ? null : user.provider.eq(userDto.getProvider())
+                        , user.isDeleted.eq(Boolean.FALSE)
+                ).fetchOne();
 
-  }
+    }
 }

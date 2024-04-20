@@ -21,31 +21,31 @@ import org.hibernate.annotations.DynamicUpdate;
         indexes = {
                 @Index(name = "idx_USER_SHOP", columnList = "USER_SEQ", unique = true)
         })
-public class Shop extends BaseEntity{
-  @Id
-  @Column(name = "SHOP_SEQ", nullable = false)
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long shopSeq;
+public class Shop extends BaseEntity {
+    @Id
+    @Column(name = "SHOP_SEQ", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long shopSeq;
 
-  @Size(max = 255, message = "샵 이름은 255 자를 넘을 수 없습니다.")
-  @Column(name = "SHOP_NAME", nullable = false)
-  private String shopName;
+    @Size(max = 255, message = "샵 이름은 255 자를 넘을 수 없습니다.")
+    @Column(name = "SHOP_NAME", nullable = false)
+    private String shopName;
 
-  @Column(name = "SHOP_DESCRIPTION")
-  private String shopDescription;
+    @Column(name = "SHOP_DESCRIPTION")
+    private String shopDescription;
 
-  @ManyToOne(optional = false)
-  @JoinColumn(name = "USER_SEQ", nullable = false)
-  private User user;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "USER_SEQ", nullable = false)
+    private User user;
 
-  public ShopDto of(){
-    return ShopDto
-            .builder()
-            .shopSeq(this.shopSeq)
-            .shopName(this.shopName)
-            .shopDescription(this.shopDescription)
-            .userSeq(this.user.getUserSeq())
-            .build();
-  }
+    public ShopDto of() {
+        return ShopDto
+                .builder()
+                .shopSeq(this.shopSeq)
+                .shopName(this.shopName)
+                .shopDescription(this.shopDescription)
+                .userSeq(this.user.getUserSeq())
+                .build();
+    }
 
 }

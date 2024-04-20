@@ -8,7 +8,7 @@ public enum S3Bucket {
 
     private String bucket;
 
-    S3Bucket(String bucket){
+    S3Bucket(String bucket) {
         this.bucket = bucket;
     }
 }

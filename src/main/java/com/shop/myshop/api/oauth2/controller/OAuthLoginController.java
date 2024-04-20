@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class OAuthLoginController {
 
-  @GetMapping("/login")
-  public String oAuthLoginPage(){
-    return "login";
-  }
+    @GetMapping("/login")
+    public String oAuthLoginPage() {
+        return "login";
+    }
 }

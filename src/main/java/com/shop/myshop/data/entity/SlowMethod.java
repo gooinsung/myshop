@@ -13,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "MY_SHOP_SLOW_METHOD")
-public class SlowMethod extends BaseEntity{
+public class SlowMethod extends BaseEntity {
     @Id
     @Column(name = "SLOW_METHOD_SEQ", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

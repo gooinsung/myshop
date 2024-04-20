@@ -13,11 +13,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class DeliveryDto extends BaseDto{
-  private Long deliverySeq;
-  private String deliverName;
-  private Integer deliveryStatus;
-  private Long orderDetailSeq;
-  private Long orderSeq;
+public class DeliveryDto extends BaseDto {
+    private Long deliverySeq;
+    private String deliverName;
+    private Integer deliveryStatus;
+    private Long orderDetailSeq;
+    private Long orderSeq;
 
 }

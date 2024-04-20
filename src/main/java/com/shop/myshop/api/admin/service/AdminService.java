@@ -6,10 +6,8 @@ import com.shop.myshop.data.entity.User;
 import com.shop.myshop.data.entity.UserRole;
 import com.shop.myshop.data.enums.MyShopUserRole;
 import com.shop.myshop.data.repository.RoleRepository;
-import com.shop.myshop.data.repository.UserRepository;
 import com.shop.myshop.data.repository.UserRoleRepository;
 import com.shop.myshop.response.CustomResponseCode;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminService {
 
-    private final UserRepository userRepository;
     private final UserRoleRepository userRoleRepository;
     private final RoleRepository roleRepository;
     private final UserRoleQueryRepository userRoleQueryRepository;

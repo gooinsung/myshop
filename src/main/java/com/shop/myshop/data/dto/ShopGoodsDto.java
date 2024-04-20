@@ -13,12 +13,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class ShopGoodsDto extends BaseDto{
-  private Long goodsSeq;
-  private String goodsName;
-  private String goodsDescription;
-  private String goodsImgUrl;
-  private String goodsThumbnail;
-  private Long shopSeq;
+public class ShopGoodsDto extends BaseDto {
+    private Long goodsSeq;
+    private String goodsName;
+    private String goodsDescription;
+    private String goodsImgUrl;
+    private String goodsThumbnail;
+    private Long shopSeq;
 
 }

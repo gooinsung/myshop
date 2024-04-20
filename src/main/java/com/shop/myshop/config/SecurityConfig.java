@@ -3,9 +3,6 @@ package com.shop.myshop.config;
 import com.shop.myshop.api.oauth2.service.CustomOAuth2UserService;
 import com.shop.myshop.api.oauth2.service.OAuthAuthenticationSuccessHandler;
 import com.shop.myshop.security.*;
-
-import java.util.Arrays;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -42,10 +41,8 @@ public class SecurityConfig {
                 .formLogin(FormLoginConfigurer::disable)
                 .addFilterBefore(new JwtFilter(authProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtFilter.class)
-                .exceptionHandling(handle ->{
-                    handle.accessDeniedHandler(new CustomAuthenticationDeniedHandler())
-                            .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
-                })
+                .exceptionHandling(handle -> handle.accessDeniedHandler(new CustomAuthenticationDeniedHandler())
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth

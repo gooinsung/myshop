@@ -32,15 +32,13 @@ public class UserController {
     public ResponseEntity<ResultDto<Boolean>> signUp(@RequestBody @Validated UserDto userDto) {
         log.info("회원 가입 요청 userDto : {}", userDto);
         userService.signUp(userDto);
-        return ResponseEntity.ok()
-                .body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), Boolean.TRUE));
+        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), Boolean.TRUE));
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<ResultDto<GenerateToken>> signin(@RequestBody @Validated UserDto userDto) {
+    public ResponseEntity<ResultDto<GenerateToken>> signIn(@RequestBody @Validated UserDto userDto) {
         log.info("로그인 요청 userDto : {}", userDto);
-        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(),
-                userService.login(userDto)));
+        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), userService.login(userDto)));
     }
 
     @PostMapping("/admin")

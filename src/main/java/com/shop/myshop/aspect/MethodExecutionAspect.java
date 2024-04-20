@@ -28,8 +28,8 @@ public class MethodExecutionAspect {
 
             long executionTime = end - start;
 
-            if(executionTime > 1000L){
-                log.info("{} - {} takes {} second",joinPoint.getClass(), joinPoint.getSignature().getName(), end - start);
+            if (executionTime > 1000L) {
+                log.info("{} - {} takes {} second", joinPoint.getClass(), joinPoint.getSignature().getName(), end - start);
                 slowMethodRepository.save(SlowMethod
                         .builder()
                         .className(joinPoint.getSignature().getDeclaringTypeName())

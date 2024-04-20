@@ -59,10 +59,7 @@ public class FileService {
         List<FileDeleteRequestDto> fileDeleteRequsetDtoList = new ArrayList<>();
         fileDeleteRequsetDtoList.add(requestDto);
 
-        RestFileDeleteRequestDto body = RestFileDeleteRequestDto
-                .builder()
-                .fileDeleteRequestDtoList(fileDeleteRequsetDtoList)
-                .build();
+        RestFileDeleteRequestDto body = RestFileDeleteRequestDto.builder().fileDeleteRequestDtoList(fileDeleteRequsetDtoList).build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -70,8 +67,7 @@ public class FileService {
         HttpEntity<RestFileDeleteRequestDto> requestEntity = new HttpEntity<>(body, headers);
 
 
-        ResponseEntity<RestFileDeleteResponseDto> response = restTemplate.exchange(
-                fileServerUrl, HttpMethod.DELETE, requestEntity, RestFileDeleteResponseDto.class);
+        ResponseEntity<RestFileDeleteResponseDto> response = restTemplate.exchange(fileServerUrl, HttpMethod.DELETE, requestEntity, RestFileDeleteResponseDto.class);
         return response.getBody();
     }
 }

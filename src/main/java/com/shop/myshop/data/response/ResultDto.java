@@ -9,19 +9,19 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Builder
 public class ResultDto<T> {
-  private HttpStatus status;
-  private String resultMsg;
-  private T resultData;
+    private HttpStatus status;
+    private String resultMsg;
+    private T resultData;
 
-  public static<T> ResultDto<T> res(final HttpStatus status, final String resultMsg){
-    return res(status,resultMsg, null);
-  }
+    public static <T> ResultDto<T> res(final HttpStatus status, final String resultMsg) {
+        return res(status, resultMsg, null);
+    }
 
-  public static<T> ResultDto<T> res(final HttpStatus status, final String resultMsg, final T t){
-    return ResultDto.<T>builder()
-        .status(status)
-        .resultMsg(resultMsg)
-        .resultData(t)
-        .build();
-  }
+    public static <T> ResultDto<T> res(final HttpStatus status, final String resultMsg, final T t) {
+        return ResultDto.<T>builder()
+                .status(status)
+                .resultMsg(resultMsg)
+                .resultData(t)
+                .build();
+    }
 }

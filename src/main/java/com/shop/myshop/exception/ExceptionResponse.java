@@ -4,10 +4,10 @@ import lombok.Builder;
 
 @Builder
 public record ExceptionResponse(
-    String code,
-    String message,
-    String detail
-    
+        String code,
+        String message,
+        String detail
+
 ) {
 
 }

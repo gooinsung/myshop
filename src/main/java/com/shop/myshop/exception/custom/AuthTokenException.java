@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 public class AuthTokenException extends JwtException {
 
-  public AuthTokenException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public AuthTokenException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  public AuthTokenException(String message) {
-    super(message);
-  }
+    public AuthTokenException(String message) {
+        super(message);
+    }
 
 }
