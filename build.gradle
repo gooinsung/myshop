@@ -82,7 +82,3 @@ sourceSets {
 clean {
 	delete file(generated)
 }
-
-test {
-	useJUnitPlatform()
-}
