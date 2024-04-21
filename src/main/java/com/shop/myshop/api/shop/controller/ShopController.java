@@ -1,7 +1,10 @@
 package com.shop.myshop.api.shop.controller;
 
+import com.shop.myshop.api.shop.dto.GoodsRequestDto;
+import com.shop.myshop.api.shop.service.ShopGoodsService;
 import com.shop.myshop.api.shop.service.ShopService;
 import com.shop.myshop.data.dto.ShopDto;
+import com.shop.myshop.data.dto.ShopGoodsDto;
 import com.shop.myshop.data.entity.Shop;
 import com.shop.myshop.data.entity.User;
 import com.shop.myshop.data.response.ResultDto;
@@ -13,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -21,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShopController {
     private final ShopService shopService;
+    private final ShopGoodsService shopGoodsService;
 
     @GetMapping("/{shopSeq}")
     public ResponseEntity<ResultDto<List<Shop>>> mySHop(@PathVariable Long shopSeq) {
@@ -28,8 +33,24 @@ public class ShopController {
     }
 
     @PostMapping
-    public ResponseEntity<ResultDto<ShopDto>> createShop(@RequestBody @Validated ShopDto shopDto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<ResultDto<ShopDto>> createShop(@RequestBody @Validated ShopDto shopDto,
+                                                         @AuthenticationPrincipal User user) {
         shopDto.setUserSeq(user.getUserSeq());
         return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), shopService.createShop(shopDto)));
+    }
+
+    @PostMapping("/{shopSeq}/goods")
+    public ResponseEntity<ResultDto<ShopGoodsDto>> registerGoods(@PathVariable Long shopSeq, @ModelAttribute @Validated GoodsRequestDto goodsRequestDto,
+                                                                 @AuthenticationPrincipal User user) throws IOException {
+        ShopDto shopDto = ShopDto
+                .builder()
+                .shopSeq(shopSeq)
+                .userSeq(user.getUserSeq())
+                .build();
+        shopService.checkShop(shopDto);
+
+        goodsRequestDto.setShopSeq(shopSeq);
+
+        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), shopGoodsService.registerGoods(goodsRequestDto)));
     }
 }

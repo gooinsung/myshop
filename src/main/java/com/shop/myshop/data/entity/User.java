@@ -39,7 +39,7 @@ public class User extends BaseEntity {
     private String provider;
 
     @Size(max = 255, message = "이름은 255 자를 넘을 수 없습니다.")
-    @Column(name = "USER_NAME", nullable = false)
+    @Column(name = "USER_NAME")
     private String userName;
 
     @Size(max = 255, message = "PW 는 255 자를 넘을 수 없습니다.")

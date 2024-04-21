@@ -23,6 +23,8 @@ public enum CustomExceptionCode {
     BUSINESS_LOGIC_EXCEPTION("ER001", "비즈니스 로직 실행 중 오류가 발생하였습니다."),
     RUNTIME_EXCEPTION("ER002", "예상치 못한 런타임 예외가 발생하였습니다."),
     VALIDATION_PARAMETER_EXCEPTION("ER003", "유효하지않은 파라미터입니다."),
+    IOEXCEPTION("ER004", "이미지 등록 시 예외가 발생하였습니다."),
+    DUPLICATED_EXCEPTION("ER005", "중복되는 데이터 입니다."),
 
 
     ;

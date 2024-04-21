@@ -18,7 +18,9 @@ public class ShopGoodsDto extends BaseDto {
     private String goodsName;
     private String goodsDescription;
     private String goodsImgUrl;
+    private String goodsImgFileName;
     private String goodsThumbnail;
+    private String goodsThumbNailFileName;
     private Long shopSeq;
 
 }

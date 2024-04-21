@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.shop.myshop.exception.CustomExceptionCode.*;
@@ -56,6 +57,24 @@ public class GlobalExceptionHandler {
                         new ExceptionResponse(
                                 BUSINESS_LOGIC_EXCEPTION.getCode(),
                                 BUSINESS_LOGIC_EXCEPTION.getMessgae(),
+                                e.getMessage()
+                        )
+                );
+    }
+
+    /**
+     * 파일 업로드 예외 처리
+     */
+    @ExceptionHandler(IOException.class)
+    protected ResponseEntity<ExceptionResponse> handleIOException(IOException e,
+                                                                  HttpServletRequest request) {
+        ExceptionUtil.errorLogging(e, request);
+        return ResponseEntity
+                .badRequest()
+                .body(
+                        new ExceptionResponse(
+                                IOEXCEPTION.getCode(),
+                                IOEXCEPTION.getMessgae(),
                                 e.getMessage()
                         )
                 );

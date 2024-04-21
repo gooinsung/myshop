@@ -1,5 +1,6 @@
 package com.shop.myshop.api.shop.service;
 
+import com.shop.myshop.api.shop.query.ShopQueryRepository;
 import com.shop.myshop.data.dto.ShopDto;
 import com.shop.myshop.data.entity.Shop;
 import com.shop.myshop.data.entity.User;
@@ -15,13 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ShopService {
     private final ShopRepository shopRepository;
+    private final ShopQueryRepository shopQueryRepository;
     private final UserRepository userRepository;
 
     @Transactional
     public ShopDto createShop(ShopDto shopDto) {
 
         User user = userRepository.findById(shopDto.getUserSeq())
-                .orElseThrow(()-> new EntityNotFoundException("존재하지 않는 계정입니다."));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다."));
 
         Shop shop = Shop
                 .builder()
@@ -33,6 +35,15 @@ public class ShopService {
         Shop createdShop = shopRepository.saveAndFlush(shop);
 
         return createdShop.of();
+    }
+
+    public void checkShop(ShopDto shopDto) {
+        userRepository.findById(shopDto.getUserSeq())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 계정입니다."));
+
+        if (shopQueryRepository.getShopDtoByShopAndUser(shopDto) == null) {
+            throw new EntityNotFoundException("존재하지 않는 shop 입니다.");
+        }
     }
 
 }
