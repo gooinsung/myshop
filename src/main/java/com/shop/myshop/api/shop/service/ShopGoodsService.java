@@ -80,4 +80,13 @@ public class ShopGoodsService {
                 .build();
         return shopGoodsRepository.saveAndFlush(shopGoods).of();
     }
+
+    public ShopGoodsDto getGoodsDetail(ShopGoodsDto shopGoodsDto){
+        ShopGoodsDto userShopGoodsDto = shopGoodsQueryRepository.getShopGoodsDtoByShopSeqAndGoodsSeq(shopGoodsDto);
+
+        if(userShopGoodsDto == null)
+            throw new BusinessLogicException(CustomExceptionCode.ENTITY_NOT_FOUND);
+
+        return userShopGoodsDto;
+    }
 }

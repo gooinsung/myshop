@@ -55,6 +55,7 @@ public class ShopGoods extends BaseEntity {
     public ShopGoodsDto of() {
         return ShopGoodsDto
                 .builder()
+                .goodsSeq(this.goodsSeq)
                 .shopSeq(this.shop.getShopSeq())
                 .goodsName(this.goodsName)
                 .goodsDescription(this.goodsDescription)

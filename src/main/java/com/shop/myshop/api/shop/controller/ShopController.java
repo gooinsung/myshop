@@ -53,4 +53,24 @@ public class ShopController {
 
         return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), shopGoodsService.registerGoods(goodsRequestDto)));
     }
+
+    @GetMapping("/{shopSeq}/goods/{goodsSeq}")
+    public ResponseEntity<ResultDto<ShopGoodsDto>> goodsDetail(@PathVariable Long shopSeq, @PathVariable Long goodsSeq,
+                                                               @AuthenticationPrincipal User user) {
+        ShopDto shopDto = ShopDto
+                .builder()
+                .shopSeq(shopSeq)
+                .userSeq(user.getUserSeq())
+                .build();
+
+        shopService.checkShop(shopDto);
+
+        ShopGoodsDto shopGoodsDto = ShopGoodsDto
+                .builder()
+                .goodsSeq(goodsSeq)
+                .shopSeq(shopSeq)
+                .build();
+
+        return ResponseEntity.ok().body(ResultDto.res(HttpStatus.OK, HttpStatus.OK.toString(), shopGoodsService.getGoodsDetail(shopGoodsDto)));
+    }
 }

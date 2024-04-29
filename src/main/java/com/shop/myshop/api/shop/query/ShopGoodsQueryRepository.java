@@ -34,4 +34,28 @@ public class ShopGoodsQueryRepository {
                         shopGoodsDto.getShopSeq() == null ? null : shopGoods.shop.shopSeq.eq(shopGoodsDto.getShopSeq())
                 ).fetchOne();
     }
+
+    public ShopGoodsDto getShopGoodsDtoByShopSeqAndGoodsSeq(ShopGoodsDto shopGoodsDto){
+        return queryFactory
+                .select(
+                        Projections.fields(
+                                ShopGoodsDto.class,
+                                shopGoods.goodsSeq,
+                                shopGoods.goodsName,
+                                shopGoods.goodsDescription,
+                                shopGoods.goodsImgUrl,
+                                shopGoods.goodsImgFileName,
+                                shopGoods.goodsThumbnail,
+                                shopGoods.goodsThumbNailFileName,
+                                shopGoods.shop.shopSeq,
+                                shopGoods.createdAt,
+                                shopGoods.updatedAt,
+                                shopGoods.isDeleted
+                        )
+                ).from(shopGoods)
+                .where(
+                        shopGoodsDto.getShopSeq() == null ? null : shopGoods.shop.shopSeq.eq(shopGoodsDto.getShopSeq()),
+                        shopGoodsDto.getGoodsSeq() == null ? null : shopGoods.goodsSeq.eq(shopGoodsDto.getGoodsSeq())
+                ).fetchOne();
+    }
 }
