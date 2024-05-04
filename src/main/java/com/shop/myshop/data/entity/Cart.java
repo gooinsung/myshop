@@ -13,6 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "MY_SHOP_CART")
+@ToString
 public class Cart extends BaseEntity {
     @Id
     @Column(name = "CART_SEQ")

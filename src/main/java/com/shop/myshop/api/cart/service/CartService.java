@@ -1,6 +1,5 @@
 package com.shop.myshop.api.cart.service;
 
-import com.shop.myshop.api.cart.dto.CartRequestDto;
 import com.shop.myshop.api.cart.query.CartQueryRepository;
 import com.shop.myshop.data.dto.CartDto;
 import com.shop.myshop.data.entity.Cart;
@@ -17,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
+
 @Slf4j
 @Transactional(readOnly = true)
 @Service
@@ -27,6 +29,11 @@ public class CartService {
     private final UserRepository userRepository;
     private final ShopGoodsRepository shopGoodsRepository;
     private final ShopGoodsPriceRepository shopGoodsPriceRepository;
+
+
+    public List<CartDto> getUserCartList(User user) {
+        return cartQueryRepository.findAllByUserSeq(user.getUserSeq());
+    }
 
     @Transactional
     public Boolean registerCart(CartDto cartDto) {
@@ -50,7 +57,7 @@ public class CartService {
                     .build();
 
             cartRepository.saveAndFlush(cart);
-        } else{
+        } else {
             Cart cart = cartRepository.findById(userCartDto.getCartSeq()).get();
 
             ShopGoodsPrice shopGoodsPrice = shopGoodsPriceRepository.findById(cartDto.getGoodsPriceSeq())
@@ -60,5 +67,17 @@ public class CartService {
         }
 
         return true;
+    }
+
+    @Transactional
+    public void deleteCart(CartDto cartDto) {
+        Cart cart = cartRepository.findById(cartDto.getCartSeq())
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 엔티티 입니다."));
+
+        if (!Objects.equals(cart.getUser().getUserSeq(), cartDto.getUserSeq())) {
+            throw new IllegalArgumentException();
+        }
+
+        cartRepository.delete(cart);
     }
 }
