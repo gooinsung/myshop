@@ -8,6 +8,7 @@ import com.shop.myshop.api.shop.query.ShopGoodsQueryRepository;
 import com.shop.myshop.data.dto.ShopGoodsDto;
 import com.shop.myshop.data.entity.Shop;
 import com.shop.myshop.data.entity.ShopGoods;
+import com.shop.myshop.data.entity.ShopGoodsPrice;
 import com.shop.myshop.data.repository.ShopGoodsPriceRepository;
 import com.shop.myshop.data.repository.ShopGoodsRepository;
 import com.shop.myshop.data.repository.ShopRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -78,13 +80,29 @@ public class ShopGoodsService {
                 .goodsImgFileName(goodsImgFileName)
                 .shop(shop)
                 .build();
-        return shopGoodsRepository.saveAndFlush(shopGoods).of();
+        shopGoods = shopGoodsRepository.saveAndFlush(shopGoods);
+        for (BigDecimal price : shopGoodsRequestDto.getGoodsPriceList()) {
+
+            if(price.compareTo(BigDecimal.ZERO) <= 0)
+                throw new BusinessLogicException(CustomExceptionCode.INVALIDATE_PRICE);
+
+            ShopGoodsPrice shopGoodsPrice =
+                    ShopGoodsPrice
+                            .builder()
+                            .goodsPrice(price)
+                            .shopGoods(shopGoods)
+                            .build();
+
+            shopGoodsPriceRepository.saveAndFlush(shopGoodsPrice);
+        }
+
+        return shopGoods.of();
     }
 
-    public ShopGoodsDto getGoodsDetail(ShopGoodsDto shopGoodsDto){
+    public ShopGoodsDto getGoodsDetail(ShopGoodsDto shopGoodsDto) {
         ShopGoodsDto userShopGoodsDto = shopGoodsQueryRepository.getShopGoodsDtoByShopSeqAndGoodsSeq(shopGoodsDto);
 
-        if(userShopGoodsDto == null)
+        if (userShopGoodsDto == null)
             throw new BusinessLogicException(CustomExceptionCode.ENTITY_NOT_FOUND);
 
         return userShopGoodsDto;

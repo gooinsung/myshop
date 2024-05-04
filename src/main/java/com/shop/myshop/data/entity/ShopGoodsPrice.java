@@ -24,7 +24,7 @@ public class ShopGoodsPrice extends BaseEntity {
     private Long goodsPriceSeq;
 
     @Column(name = "GOODS_PRICE", nullable = false)
-    private BigDecimal goods_price;
+    private BigDecimal goodsPrice;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "GOODS_SEQ", nullable = false)

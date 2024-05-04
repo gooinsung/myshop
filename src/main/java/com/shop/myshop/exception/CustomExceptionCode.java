@@ -20,6 +20,9 @@ public enum CustomExceptionCode {
     // JPA 관련
     ENTITY_NOT_FOUND("E001", "존재하지 않는 엔티티 입니다."),
 
+    // Shop 관련
+    INVALIDATE_PRICE("E100", "상품 가격이 유효하지 않습니다."),
+
     BUSINESS_LOGIC_EXCEPTION("ER001", "비즈니스 로직 실행 중 오류가 발생하였습니다."),
     RUNTIME_EXCEPTION("ER002", "예상치 못한 런타임 예외가 발생하였습니다."),
     VALIDATION_PARAMETER_EXCEPTION("ER003", "유효하지않은 파라미터입니다."),

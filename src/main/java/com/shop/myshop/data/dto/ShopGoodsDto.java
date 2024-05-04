@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,5 +24,5 @@ public class ShopGoodsDto extends BaseDto {
     private String goodsThumbnail;
     private String goodsThumbNailFileName;
     private Long shopSeq;
-
+    private List<ShopGoodsPriceDto> goodsPriceDtoList;
 }
